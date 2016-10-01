@@ -26,7 +26,7 @@ double lowLimit;                // Low temperature limit
 
 // Event publishing settings
 long lastPublish = 0;     // Keep track of publication timing
-String pubMode = "on";    // Can be "off", "temp", "alarm", or "both"
+String pubMode = "both";    // Can be "off", "temp", "alarm", or "both"
 int pubMinutes = 5;       // Temperature publishing interval in minutes
 
 
