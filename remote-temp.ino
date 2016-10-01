@@ -19,14 +19,14 @@ double temp;                    // The current temperature
 
 // Alarm settings and data
 String alarmState = "normal";   // Temperature state: "high", "low", "normal"
-String alarmMode = "off";       // Can be "off", "low", "high", or "both"
+String alarmMode = "off";       // Can be "off", "low", "high", or "all"
 
 double highLimit;               // High temperature limit
 double lowLimit;                // Low temperature limit
 
 // Event publishing settings
 long lastPublish = 0;     // Keep track of publication timing
-String pubMode = "both";    // Can be "off", "temp", "alarm", or "both"
+String pubMode = "all";    // Can be "off", "temp", "alarm", or "all"
 int pubMinutes = 5;       // Temperature publishing interval in minutes
 
 
@@ -73,26 +73,26 @@ void loop() {
   }
 
   // Check for high temperature condition if alarm is on
-  if( (alarmMode == "high" || alarmMode == "both") && temp > highLimit) {
+  if( (alarmMode == "high" || alarmMode == "all") && temp > highLimit) {
     if(alarmState != "high") {
       // Upate alarm state if there is a change
       alarmState = "high";
       // Publish alarm state change if publishing turned on
-      if(pubMode == "alarm" || pubMode == "both") { publishAlarm(); }
+      if(pubMode == "alarm" || pubMode == "all") { publishAlarm(); }
     }
   // Check for low temperature condition if alarm is on
-  } else if((alarmMode == "low" || alarmMode == "both") && temp < lowLimit) {
+  } else if((alarmMode == "low" || alarmMode == "all") && temp < lowLimit) {
     if (alarmState != "low") {
       // Upate alarm state if there is a change
       alarmState = "low";
       // Publish alarm state change if publishing turned on
-      if(pubMode == "alarm" || pubMode == "both") {publishAlarm();}
+      if(pubMode == "alarm" || pubMode == "all") {publishAlarm();}
     }
   // Upate alarm state if temperature has returned to normal
   } else if(alarmState != "normal") {
     alarmState = "normal";
     // Publish alarm state change if publishing turned on
-    if(pubMode == "alarm" || pubMode == "both") {publishAlarm();}
+    if(pubMode == "alarm" || pubMode == "all") {publishAlarm();}
   }
 
   // Check if its time to publish a temperature update
@@ -101,7 +101,7 @@ void loop() {
     lastPublish = millis();
 
     // Publish the temperature if turned on
-    if(pubMode == "temp" || pubMode == "both") {
+    if(pubMode == "temp" || pubMode == "all") {
       Particle.publish("temp", String::format("%.2f", temp));
     }
   }
@@ -138,14 +138,14 @@ int setScale(String command){
 }
 
 // Sets alarm mode. Returns 1 if input is "off", "low",
-// "high", or "both"; otherwise returns -1.
+// "high", or "all"; otherwise returns -1.
 int setAlarm(String command){
   command.toLowerCase();
 
   if( command == "off" ||
       command == "low" ||
       command == "high" ||
-      command == "both" ) {
+      command == "all" ) {
     alarmMode = command;
     return 1;
   } else {
@@ -154,14 +154,14 @@ int setAlarm(String command){
 }
 
 // Sets publishing mode. Returns 1 if input is "off", "temp",
-// "alarm", or "both"; otherwise returns -1.
+// "alarm", or "all"; otherwise returns -1.
 int setPublish(String command){
   command.toLowerCase();
 
   if( command == "off" ||
       command == "temp" ||
       command == "alarm" ||
-      command == "both" ) {
+      command == "all" ) {
     pubMode = command;
     return 1;
   } else {
